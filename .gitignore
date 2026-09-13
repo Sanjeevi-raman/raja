@@ -4,8 +4,8 @@ client/node_modules/
 server/node_modules/
 
 # Build output
-dist/
-client/dist/
+/dist/
+!client/dist/
 .next/
 
 # Local environment files
