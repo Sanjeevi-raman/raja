@@ -1,0 +1,172 @@
+/* Final readability pass and brand catalogue page. */
+header{height:84px}.logo b{font-size:36px}.logo span{font-size:8px}nav button{font-size:11px}.quote,.btn{font-size:11px;padding:13px 20px}.hero-copy>small,.detail-copy>small{font-size:12px}.hero-copy p{font-size:13px}.stats b{font-size:26px}.stats small{font-size:9px}.center h2,.journey h2,.features h2,.contact h2,.related h2,.enquiries h2{font-size:38px}.center p,.page-head p{font-size:13px}.category b{font-size:18px}.category small{font-size:10px}.page-head h1{font-size:54px}.page-head small,.crumb{font-size:11px}.about-page>div>p{font-size:15px}.values,.brands{padding:72px max(8vw,52px)}.values{display:grid;grid-template-columns:.8fr 1.2fr;gap:55px;background:#f6f7f7}.values>div>small,.brand-intro small{color:var(--red);font-size:12px;font-weight:700;text-transform:uppercase}.values h2,.brand-intro h2{font:800 42px/1 'Barlow Condensed';text-transform:uppercase;margin:10px 0}.values p,.brand-intro p{font-size:14px;line-height:1.7;color:var(--muted)}.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.value-grid article{background:#fff;padding:25px 18px;border:1px solid var(--line)}.value-grid b{display:block;font:700 22px 'Barlow Condensed';text-transform:uppercase;margin:13px 0 4px}.value-grid p{font-size:12px;margin:0}.brand-intro{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;margin-bottom:42px}.brand-intro img{width:100%;height:270px;object-fit:cover}.brand-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.brand-grid article{min-height:125px;border:1px solid var(--line);padding:18px;background:#fafafa;display:flex;flex-direction:column;justify-content:center}.brand-grid span{font:700 13px 'Barlow Condensed';color:var(--red)}.brand-grid b{font:700 26px 'Barlow Condensed';text-transform:uppercase;margin:3px 0}.brand-grid small{font-size:10px;color:var(--muted)}
+@media(max-width:700px){header{height:60px}.logo b{font-size:25px}.logo span{font-size:6px}.hero-copy p{font-size:11px}.center h2{font-size:31px}.page-head h1{font-size:43px}.values,.brands{padding:48px 18px}.values,.brand-intro{display:block}.value-grid{grid-template-columns:1fr;margin-top:22px}.value-grid article{padding:19px}.brand-intro img{height:220px;margin-bottom:25px}.brand-grid{grid-template-columns:repeat(2,1fr);gap:8px}.brand-grid article{min-height:105px}.brand-grid b{font-size:22px}}
+
+/* Premium navigation and extended page layout */
+body{background:#fff}header{position:sticky;top:0;height:92px;border:0;border-bottom:1px solid #eceeef;box-shadow:0 4px 20px rgba(17,24,29,.035)}nav{gap:7px}nav a{color:var(--ink);text-decoration:none;text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:.07em;padding:13px 11px;border-radius:4px;transition:color .2s,background .2s}nav a:hover,nav a.active{color:var(--red);background:#fff2f1}nav a.active{box-shadow:inset 0 -2px 0 var(--red)}nav .quote{color:#fff;padding:14px 20px;margin-left:8px;box-shadow:0 8px 18px rgba(227,27,22,.19)}nav .quote:hover{color:#fff;background:#bd0f0b}.drawer>a:not(.quote){color:#fff;text-decoration:none;display:grid;grid-template-columns:22px 1fr 14px;align-items:center;text-align:left;padding:13px 0;font-size:11px;border-bottom:1px solid #2d353a}.drawer>a.active:not(.quote){color:#fff;background:transparent;border-left:3px solid var(--red);padding-left:10px}.drawer .quote{text-decoration:none;text-align:center}.footer-admin-login{color:#b6bdc1}.footer-admin-login:hover{color:#fff}.home-hero{min-height:610px;height:calc(100vh - 92px);max-height:760px}.hero-copy{padding-top:clamp(110px,15vh,170px)}.hero-copy h1{font-size:clamp(62px,6.4vw,102px)}.hero-copy p{letter-spacing:.03em;line-height:1.7}.page-head{padding-top:70px;padding-bottom:45px;background:linear-gradient(115deg,#fff 0%,#fff 67%,#fff2f1 67%)}.page-head h1{font-size:clamp(56px,6vw,86px)}.section-kicker{display:block;color:var(--red);font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}.intro-section{display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:start;padding:90px max(8vw,52px);background:#f7f8f8}.intro-section h2{font:800 clamp(38px,4vw,58px)/.95 'Barlow Condensed';text-transform:uppercase;margin:0}.intro-section>div>p{font-size:15px;line-height:1.85;color:var(--muted);margin:0 0 20px}.check-list{padding:0;margin:20px 0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:11px}.check-list li{font-size:12px;font-weight:700}.check-list li:before{content:'✓';display:inline-grid;place-items:center;width:20px;height:20px;margin-right:8px;border-radius:50%;background:var(--red);color:#fff;font-size:11px}.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.service-grid article{background:#fff;border:1px solid var(--line);padding:26px;min-height:170px}.service-grid svg{color:var(--red)}.service-grid h3{font:700 24px 'Barlow Condensed';text-transform:uppercase;margin:15px 0 7px}.service-grid p{font-size:12px;line-height:1.6;color:var(--muted);margin:0}.cta-band{background:var(--ink);color:#fff;padding:58px max(8vw,52px);display:flex;align-items:center;justify-content:space-between;gap:30px}.cta-band h2{font:800 clamp(32px,3.5vw,52px)/.95 'Barlow Condensed';text-transform:uppercase;margin:6px 0}.cta-band p{color:#abb4b8;font-size:13px;margin:0}.cta-band .btn{white-space:nowrap}.work,.gallery{padding-top:70px;padding-bottom:90px}.project-grid article{background:#fff;box-shadow:0 9px 20px rgba(17,24,29,.05);transition:transform .2s}.project-grid article:hover{transform:translateY(-5px)}.gallery img{height:220px}.contact{padding-top:70px}.contact-info{padding:10px 15px}.contact-info h2{font-size:48px}.contact form{padding:34px;box-shadow:0 12px 35px rgba(17,24,29,.06)}footer a{color:#b6bdc1;text-align:left;font-size:10px;text-decoration:none}footer a:hover{color:#fff}
+@media(max-width:700px){header{height:68px}.home-hero{height:auto;min-height:600px}.page-head{padding-top:42px;background:#fff}.intro-section{display:block;padding:52px 18px}.intro-section h2{font-size:41px;margin-bottom:24px}.check-list{grid-template-columns:1fr}.service-grid{grid-template-columns:1fr}.service-grid article{min-height:0}.cta-band{display:block;padding:42px 18px}.cta-band .btn{margin-top:22px}.gallery img{height:155px}}
+
+/* Accessible reading scale */
+body{font-size:16px}.logo span{font-size:9px}.logo b{font-size:39px}nav a{font-size:11px}.quote,.btn{font-size:12px}.page-head small,.crumb,.section-kicker{font-size:12px}.page-head p,.center p{font-size:15px;line-height:1.6}.category small,.product-card p,.project-grid p,.project-grid small,.brand-grid small{font-size:12px}.catalog aside button{font-size:12px}.detail-copy p,.detail-copy li,.contact-info p{font-size:14px}.time p,.features p{font-size:12px;line-height:1.6}.stats small{font-size:10px}.check-list li,.service-grid p{font-size:14px}.contact input,.contact select,.contact textarea{font-size:13px}.contact label{font-size:12px}footer a,footer span,footer button{font-size:12px}@media(max-width:700px){.logo b{font-size:29px}.logo span{font-size:7px}nav a{font-size:12px}.page-head p,.center p{font-size:14px}.category small,.product-card p{font-size:11px}}
+
+/* Official RAJA lock-up used consistently in the header, mobile menu and footer. */
+.logo{display:inline-flex;flex:none;line-height:0}
+.logo img{display:block;width:245px;height:auto;max-height:62px;object-fit:contain}
+.drawer .logo img{width:250px;max-height:66px}
+.cta-kicker-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.cta-kicker-row img{display:block;width:42px;height:35px;object-fit:contain}
+.cta-kicker-row .section-kicker{margin:0}
+footer{grid-template-columns:repeat(3,1fr);justify-items:start}
+@media(max-width:900px){.logo img{width:205px;max-height:54px}header{padding-left:24px;padding-right:24px}nav{gap:2px}nav a{padding-left:7px;padding-right:7px}}
+@media(max-width:700px){.logo img{width:175px;max-height:47px}.drawer .logo img{width:230px;max-height:61px}.cta-kicker-row img{width:38px;height:32px}}
+
+/* Product catalogue mobile visibility and readable content scale */
+.product-categories h3{font-size:24px!important;letter-spacing:.02em;margin-bottom:14px!important}.category-filter-list{display:grid;gap:8px}.product-categories button{font-size:15px!important;line-height:1.25!important;padding:11px 0!important;color:#27323a}.product-categories button.selected{font-size:16px!important;color:var(--red)!important}.product-card p,.category small,.brand-grid small,.project-grid p,.project-grid small,.detail-copy p,.detail-copy li,.details-box p,.contact-info p,.features p,.time p,.service-grid p,.about-page p,.values p,.brand-intro p,.cms-section header p,.cms-section p,.supply-section p,footer span,footer a{font-size:clamp(15px,1.05vw,17px)!important;line-height:1.65!important}.product-card h3{font-size:22px!important;line-height:1.05!important}.find input{font-size:15px!important}.find .btn{font-size:15px!important;min-width:110px}.logo img[src=""],.preloader-logo[src=""]{visibility:hidden}.logo img{min-width:190px;min-height:44px}.preloader-logo{min-width:190px;min-height:54px}
+@media(max-width:700px){.catalog aside.product-categories{display:block!important;margin:0 0 18px!important;padding:15px!important;background:#fff!important;border:1px solid var(--line)!important}.catalog aside.product-categories h3{font-size:27px!important;margin:0 0 12px!important}.category-filter-list{display:flex!important;gap:10px!important;overflow-x:auto!important;white-space:nowrap!important;padding:0 0 8px!important;scroll-snap-type:x proximity}.category-filter-list button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-height:42px!important;border:1px solid #e3e7e9!important;background:#fff!important;padding:10px 14px!important;font-size:15px!important;font-weight:800!important;text-transform:uppercase!important;scroll-snap-align:start}.category-filter-list button.selected{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important}.page-head p,.center p,.product-card p,.category small,.brand-grid small,.project-grid p,.project-grid small,.detail-copy p,.detail-copy li,.details-box p,.contact-info p,.features p,.time p,.service-grid p{font-size:15px!important;line-height:1.62!important}.product-card h3{font-size:20px!important}.order-product{font-size:15px!important;padding:13px 10px!important}.logo img{min-width:150px;min-height:38px}}
+/* Customer-friendly category filtering and a compact horizontal brand mark. */
+.category-select,.category-scroll-note{display:none}.logo{height:58px;align-items:center;overflow:visible}.logo img{width:230px!important;min-width:0!important;height:52px!important;max-height:none!important;object-fit:contain}.drawer .logo img{width:245px!important;height:56px!important}
+@media(max-width:700px){.catalog aside.product-categories{display:block!important}.category-select{display:grid;gap:6px;margin:0 0 13px}.category-select span{font-size:13px;font-weight:800;color:#27323a}.category-select select{width:100%;min-height:45px;padding:0 13px;border:1px solid #cfd5d8;border-radius:5px;background:#fff;color:#172125;font:700 16px 'DM Sans',sans-serif}.category-filter-list{padding-bottom:10px!important;scrollbar-width:thin;scrollbar-color:var(--red) #eef0f1;-webkit-overflow-scrolling:touch}.category-filter-list::-webkit-scrollbar{height:5px}.category-filter-list::-webkit-scrollbar-track{background:#eef0f1;border-radius:8px}.category-filter-list::-webkit-scrollbar-thumb{background:var(--red);border-radius:8px}.category-scroll-note{display:block;margin-top:7px;color:#68737a;font-size:12px!important;font-weight:700}.logo{height:50px}.logo img{width:174px!important;height:42px!important;min-width:0!important}.drawer .logo img{width:205px!important;height:48px!important}}
+@media(max-width:700px){.category-filter-list,.category-scroll-note{display:none!important}.category-select{margin-bottom:0}.category-select.selected select{border-color:var(--red);box-shadow:0 0 0 3px #e31b1620;color:var(--red)}.category-select.selected span{color:var(--red)}}
+.product-count{margin:0 0 14px;color:#68737a;font-size:14px!important;font-weight:700}
+
+/* Header logo: use a wide, transparent PNG instead of a square logo image. */
+.logo .brand-logo{width:340px!important;height:auto!important;max-height:56px!important;display:block;object-fit:contain;object-position:left center}
+@media(max-width:900px){.logo .brand-logo{width:260px!important;max-height:48px!important}}
+/* Header logo: wide horizontal RAJA lock-up. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  height: 72px;
+  overflow: visible;
+  line-height: 0;
+}
+
+.logo .brand-logo {
+  display: block;
+  width: 340px !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.drawer .logo .brand-logo {
+  width: 300px !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+@media (max-width: 900px) {
+  .logo {
+    height: 64px;
+  }
+
+  .logo .brand-logo {
+    width: 280px !important;
+  }
+
+  .drawer .logo .brand-logo {
+    width: 270px !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .logo {
+    height: 54px;
+  }
+
+  .logo .brand-logo {
+    width: 210px !important;
+    height: auto !important;
+  }
+
+  .drawer .logo .brand-logo {
+    width: 250px !important;
+    height: auto !important;
+  }
+}
+
+/* Exact RAJA mark and compact text lock-up. Kept last to override older logo rules. */
+.logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  height: 68px !important;
+  overflow: visible !important;
+  line-height: 1 !important;
+  text-decoration: none;
+}
+
+.logo .brand-mark-frame {
+  display: block;
+  width: 80px;
+  height: 64px;
+  flex: 0 0 80px;
+  overflow: hidden;
+}
+
+.logo .brand-mark {
+  display: block !important;
+  width: 107px !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform: translate(-13px, -5px);
+}
+
+.logo .brand-copy {
+  display: flex !important;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.logo .brand-copy strong {
+  color: var(--ink) !important;
+  font: 900 38px/.78 'Barlow Condensed', sans-serif !important;
+  letter-spacing: .01em;
+}
+
+.logo .brand-copy small {
+  display: block !important;
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 8px;
+  background: var(--red);
+  color: #fff !important;
+  font: 800 9px/1 'DM Sans', sans-serif !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.drawer .logo .brand-copy strong { color: #fff !important; }
+
+@media (max-width: 900px) {
+  .logo { height: 58px !important; gap: 7px !important; }
+  .logo .brand-mark-frame { width: 67px; height: 54px; flex-basis: 67px; }
+  .logo .brand-mark { width: 90px !important; transform: translate(-11px, -4px); }
+  .logo .brand-copy strong { font-size: 32px !important; }
+  .logo .brand-copy small { padding: 4px 7px; font-size: 7px !important; }
+}
+
+@media (max-width: 700px) {
+  .logo { height: 52px !important; gap: 6px !important; }
+  .logo .brand-mark-frame { width: 55px; height: 45px; flex-basis: 55px; }
+  .logo .brand-mark { width: 74px !important; transform: translate(-9px, -3px); }
+  .logo .brand-copy { gap: 3px; }
+  .logo .brand-copy strong { font-size: 27px !important; }
+  .logo .brand-copy small { padding: 4px 5px; font-size: 6px !important; }
+  .drawer .logo { height: 60px !important; }
+  .drawer .logo .brand-mark-frame { width: 70px; height: 56px; flex-basis: 70px; }
+  .drawer .logo .brand-mark { width: 94px !important; transform: translate(-11px, -4px); }
+  .drawer .logo .brand-copy strong { font-size: 34px !important; }
+  .drawer .logo .brand-copy small { font-size: 8px !important; }
+}

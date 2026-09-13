@@ -1,0 +1,2 @@
+/* Footer now contains only useful navigation and contact details; the brand mark sits in the CTA. */
+@media(max-width:700px){footer>div:first-of-type{grid-column:auto!important}}
