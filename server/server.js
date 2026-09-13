@@ -666,37 +666,58 @@ app.use((err, _req, res, _next) => {
 });
 
 let isInitialized = false;
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Raja Electricals API running on port ${PORT}`);
+let dbPromise = null;
+
+async function ensureDbConnected() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (!MONGODB_URI) return null;
+  if (!dbPromise) {
+    const isAtlas = MONGODB_URI.includes('mongodb+srv://') || MONGODB_URI.includes('.mongodb.net');
+    console.log(`Connecting to MongoDB ${isAtlas ? 'Atlas' : 'Server'}...`);
+    dbPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
+      .then(async () => {
+        console.log(`Connected successfully to MongoDB ${isAtlas ? 'Atlas' : 'Server'}! Database: ${mongoose.connection.name}`);
+        await Promise.all([seed(), ensureContentDefaults(), migrateProducts()]);
+        isInitialized = true;
+        console.log('MongoDB initialization and data seeding complete.');
+      })
+      .catch(error => {
+        dbPromise = null;
+        console.error('MongoDB connection error:', error.message);
+      });
+  }
+  return dbPromise;
+}
+
+// Serverless-friendly middleware: ensure DB is connected before processing API requests
+app.use('/api', async (_req, _res, next) => {
+  try {
+    await ensureDbConnected();
+  } catch (_e) {
+    // Offline/fallback handling is built into route handlers
+  }
+  next();
 });
 
-// Connect to MongoDB Atlas
-if (MONGODB_URI) {
-  const isAtlas = MONGODB_URI.includes('mongodb+srv://') || MONGODB_URI.includes('.mongodb.net');
-  console.log(`Connecting to MongoDB ${isAtlas ? 'Atlas' : 'Server'}...`);
-  mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
-    .then(async () => {
-      console.log(`Connected successfully to MongoDB ${isAtlas ? 'Atlas' : 'Server'}! Database: ${mongoose.connection.name}`);
-      await Promise.all([seed(), ensureContentDefaults(), migrateProducts()]);
-      isInitialized = true;
-      console.log('MongoDB initialization and data seeding complete.');
-    })
-    .catch(error => {
-      console.error('MongoDB connection error:', error.message);
-      if (isAtlas) {
-        console.error('Atlas Tip: Ensure your Atlas user credentials and Network Access IP whitelist are properly configured.');
-      }
-    });
-} else {
-  isInitialized = true;
-  console.log('No MONGODB_URI provided. Running in offline/Supabase mode.');
+let server = null;
+// Only start HTTP listener if executed directly (not when imported as a serverless function)
+if (require.main === module) {
+  server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Raja Electricals API running on port ${PORT}`);
+  });
+  ensureDbConnected();
 }
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully...');
-  server.close(() => {
-    mongoose.connection.close();
-    process.exit(0);
-  });
+  if (server) {
+    server.close(() => {
+      mongoose.connection.close();
+      process.exit(0);
+    });
+  }
 });
+
+module.exports = app;
+

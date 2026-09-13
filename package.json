@@ -16,5 +16,13 @@
     "seed:catalogue": "node server/seed_catalogue_to_supabase.js",
     "preview": "npm run preview --workspace=client",
     "deploy": "npm run build && npm start"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.1"
   }
 }
