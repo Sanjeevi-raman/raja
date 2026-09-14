@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "npm run build && npm start",
-    "build": "npm run build --workspace=client",
+    "build": "npm run build --workspace=client && node -e \"const fs = require('fs'); fs.cpSync('client/dist', 'dist', { recursive: true }); fs.mkdirSync('client/client', { recursive: true }); fs.cpSync('client/dist', 'client/client/dist', { recursive: true });\"",
     "start": "npm start --workspace=server",
     "dev:client": "npm run dev --workspace=client",
     "dev:server": "npm run dev --workspace=server",
