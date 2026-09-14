@@ -7,6 +7,12 @@ async function readPayload(response) {
   try {
     return JSON.parse(text);
   } catch {
+    console.error('API non-JSON response:', {
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.headers.get('content-type'),
+      bodyPreview: text.slice(0, 200)
+    });
     throw new Error('The API returned an invalid response. Make sure the backend server is running.');
   }
 }

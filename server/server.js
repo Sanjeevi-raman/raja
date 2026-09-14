@@ -10,15 +10,22 @@ const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://USERNAME:PASSWORD@cluster0.vsfwtu2.mongodb.net/raja-electricals';
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-development-secret';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://stombregar3_db_user:RajaMongo@cluster0.vsfwtu2.mongodb.net/raja-electricals?retryWrites=true&w=majority';
+const JWT_SECRET = process.env.JWT_SECRET || 'raja-electricals-jwt-secret-key-2025';
 
 // URL Normalization for Vercel Serverless / Reverse Proxy routing
 app.use((req, _res, next) => {
-  if (req.url.startsWith('/api/index.js')) {
-    req.url = req.url.replace('/api/index.js', '/api');
-  } else if (req.url.startsWith('/index.js')) {
-    req.url = req.url.replace('/index.js', '/api');
+  const original = req.headers['x-matched-path'] || req.headers['x-vercel-matched-path'] || req.headers['x-forwarded-uri'] || req.headers['x-original-url'];
+  if (original && original.startsWith('/api') && !original.includes('index.js')) {
+    req.url = original;
+  }
+
+  if (req.url.startsWith('/api/index.js/')) {
+    req.url = req.url.replace('/api/index.js/', '/api/');
+  } else if (req.url.startsWith('/index.js/')) {
+    req.url = req.url.replace('/index.js/', '/api/');
+  } else if (req.url.startsWith('/api/index.js?')) {
+    req.url = req.url.replace('/api/index.js?', '/api?');
   } else if (!req.url.startsWith('/api') && (
     req.url.startsWith('/auth') ||
     req.url.startsWith('/content') ||
@@ -251,6 +258,40 @@ async function ensureContentDefaults() {
   record.markModified('data');
   await record.save();
 }
+
+let isInitialized = false;
+let dbPromise = null;
+
+async function ensureDbConnected() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (!MONGODB_URI) return null;
+  if (!dbPromise) {
+    const isAtlas = MONGODB_URI.includes('mongodb+srv://') || MONGODB_URI.includes('.mongodb.net');
+    console.log(`Connecting to MongoDB ${isAtlas ? 'Atlas' : 'Server'}...`);
+    dbPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
+      .then(async () => {
+        console.log(`Connected successfully to MongoDB ${isAtlas ? 'Atlas' : 'Server'}! Database: ${mongoose.connection.name}`);
+        await Promise.all([seed(), ensureContentDefaults(), migrateProducts()]);
+        isInitialized = true;
+        console.log('MongoDB initialization and data seeding complete.');
+      })
+      .catch(error => {
+        dbPromise = null;
+        console.error('MongoDB connection error:', error.message);
+      });
+  }
+  return dbPromise;
+}
+
+// Serverless-friendly middleware: ensure DB is connected BEFORE processing API requests
+app.use('/api', async (_req, _res, next) => {
+  try {
+    await ensureDbConnected();
+  } catch (_e) {
+    // Offline/fallback handling is built into route handlers
+  }
+  next();
+});
 
 function auth(req, res, next) {
   try {
@@ -705,40 +746,6 @@ app.use((err, _req, res, _next) => {
   if (err?.code === 11000) return res.status(409).json({ error: 'A record with the same unique value already exists.' });
   if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'The uploaded image or catalogue is too large.' });
   res.status(err.status || 500).json({ error: 'Something went wrong. Please try again.' });
-});
-
-let isInitialized = false;
-let dbPromise = null;
-
-async function ensureDbConnected() {
-  if (mongoose.connection.readyState === 1) return mongoose.connection;
-  if (!MONGODB_URI) return null;
-  if (!dbPromise) {
-    const isAtlas = MONGODB_URI.includes('mongodb+srv://') || MONGODB_URI.includes('.mongodb.net');
-    console.log(`Connecting to MongoDB ${isAtlas ? 'Atlas' : 'Server'}...`);
-    dbPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
-      .then(async () => {
-        console.log(`Connected successfully to MongoDB ${isAtlas ? 'Atlas' : 'Server'}! Database: ${mongoose.connection.name}`);
-        await Promise.all([seed(), ensureContentDefaults(), migrateProducts()]);
-        isInitialized = true;
-        console.log('MongoDB initialization and data seeding complete.');
-      })
-      .catch(error => {
-        dbPromise = null;
-        console.error('MongoDB connection error:', error.message);
-      });
-  }
-  return dbPromise;
-}
-
-// Serverless-friendly middleware: ensure DB is connected before processing API requests
-app.use('/api', async (_req, _res, next) => {
-  try {
-    await ensureDbConnected();
-  } catch (_e) {
-    // Offline/fallback handling is built into route handlers
-  }
-  next();
 });
 
 let server = null;
