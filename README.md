@@ -68,7 +68,7 @@ MONGODB_URI=mongodb+srv://stombregar3_db_user:<Atlas database password>@cluster0
 JWT_SECRET=<strong-random-secret>
 ADMIN_EMAIL=admin@rajaelectricals.com
 ADMIN_PASSWORD=<strong-admin-password>
-SUPABASE_URL=https://yfbzapzceoqkwzsmsjmk.supabase.co
+SUPABASE_URL=https://xgtwlxycixgzhjyfcksb.supabase.co
 SUPABASE_SECRET_KEY=<your-supabase-server-secret>
 ```
 
