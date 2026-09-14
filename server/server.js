@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -11,6 +12,32 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://USERNAME:PASSWORD@cluster0.vsfwtu2.mongodb.net/raja-electricals';
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-development-secret';
+
+// URL Normalization for Vercel Serverless / Reverse Proxy routing
+app.use((req, _res, next) => {
+  if (req.url.startsWith('/api/index.js')) {
+    req.url = req.url.replace('/api/index.js', '/api');
+  } else if (req.url.startsWith('/index.js')) {
+    req.url = req.url.replace('/index.js', '/api');
+  } else if (!req.url.startsWith('/api') && (
+    req.url.startsWith('/auth') ||
+    req.url.startsWith('/content') ||
+    req.url.startsWith('/products') ||
+    req.url.startsWith('/categories') ||
+    req.url.startsWith('/brands') ||
+    req.url.startsWith('/industries') ||
+    req.url.startsWith('/gallery') ||
+    req.url.startsWith('/projects') ||
+    req.url.startsWith('/enquiries') ||
+    req.url.startsWith('/orders') ||
+    req.url.startsWith('/site') ||
+    req.url.startsWith('/health') ||
+    req.url.startsWith('/admin')
+  )) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*');
@@ -643,17 +670,32 @@ app.patch('/api/admin/:collection/:id', auth, async (req, res, next) => {
   } catch (error) { next(error); }
 });
 
-// Dedicated 404 for unknown API endpoints
-app.all('/api/{*path}', (req, res) => {
+// Dedicated 404 for unknown API endpoints (always JSON)
+app.use('/api', (_req, res) => {
   res.status(404).json({
     success: false,
     error: 'API route not found'
   });
 });
 
-// Single-page application (SPA) fallback to index.html for client-side routing
-app.use((req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
+// Any non-GET request that reaches this point must return JSON 404, never index.html
+app.use((req, res, next) => {
+  if (req.method !== 'GET') {
+    return res.status(404).json({
+      success: false,
+      error: 'Route not found'
+    });
+  }
+  next();
+});
+
+// Single-page application (SPA) fallback to index.html ONLY for GET browser requests
+app.use((_req, res) => {
+  const indexPath = path.join(clientDistPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.status(404).json({ error: 'Page not found' });
 });
 
 // Centralized error handler
