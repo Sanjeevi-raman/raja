@@ -20,6 +20,10 @@ app.use((req, _res, next) => {
     req.url = original;
   }
 
+  if (req.url.startsWith('/api/api/')) {
+    req.url = req.url.replace('/api/api/', '/api/');
+  }
+
   if (req.url.startsWith('/api/index.js/')) {
     req.url = req.url.replace('/api/index.js/', '/api/');
   } else if (req.url.startsWith('/index.js/')) {

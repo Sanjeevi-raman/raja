@@ -1,4 +1,5 @@
-const apiBaseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const apiBaseUrl = rawApiUrl.endsWith('/api') ? rawApiUrl.slice(0, -4) : rawApiUrl;
 const API = apiBaseUrl ? `${apiBaseUrl}/api` : '/api';
 async function readPayload(response) {
   const text = await response.text();
