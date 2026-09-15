@@ -358,15 +358,10 @@ app.post('/api/auth/login', async (req, res, next) => {
     const lockedAdminEmail = (process.env.ADMIN_EMAIL || 'admin@rajaelectricals.com').toLowerCase();
     const lockedAdminPassword = process.env.ADMIN_PASSWORD || 'raja@123456';
 
-    // Strict Admin Lock: Only the designated admin email is allowed
-    if (email !== lockedAdminEmail) {
-      return res.status(401).json({ error: 'Invalid email or password.' });
-    }
-
-    // 1. Direct match for locked admin credentials
-    if (password === lockedAdminPassword) {
-      const token = jwt.sign({ email: lockedAdminEmail }, JWT_SECRET, { expiresIn: '12h' });
-      return res.json({ token, user: { email: lockedAdminEmail } });
+    // 1. Direct match for locked admin credentials (allows designated admin email or user's email with master admin password)
+    if (password === lockedAdminPassword && (email === lockedAdminEmail || email.includes('@'))) {
+      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '12h' });
+      return res.json({ token, user: { email } });
     }
 
     // 2. MongoDB Atlas Admin collection verification
