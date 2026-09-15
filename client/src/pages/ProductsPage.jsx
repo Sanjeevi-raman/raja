@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Btn, PageHead } from '../components/ui';
+import { Btn, PageHead, WhatsAppIcon } from '../components/ui';
 
 // ============================================
 // IMPORT ALL PRODUCT IMAGES (137+ products)
@@ -560,7 +560,7 @@ export function ProductDetailPage({ go, content }) {
         <h3>Product Details</h3><p><b>Category</b><span>{currentProduct.category}</span></p>
         {currentProduct.subcategory && <p><b>Series</b><span>{currentProduct.subcategory}</span></p>}
         <p><b>Price</b><span>{currentProduct.price}</span></p><p><b>Availability</b><span>Contact us</span></p>
-        <div className="help"><b>Need help?</b><a href={`tel:${phone}`}>{phone}</a><a className="whatsapp-button" href={whatsapp} target="_blank" rel="noreferrer">WhatsApp Now</a></div>
+        <div className="help"><b>Need help?</b><a href={`tel:${phone}`}>{phone}</a><a className="whatsapp-button" href={whatsapp} target="_blank" rel="noreferrer"><WhatsAppIcon size={16} /><span>WhatsApp Now</span></a></div>
       </aside>
     </section>
     <section className="related"><h2>Related Products in {currentProduct.category}</h2>

@@ -154,3 +154,83 @@
     height: 120px !important;
   }
 }
+
+/* WhatsApp Button & Icon Badge */
+.contact-info .whatsapp-button,
+.whatsapp-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border: 1.5px solid #25d366 !important;
+  background: #ffffff !important;
+  color: #128c7e !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  padding: 12px 18px !important;
+  margin-top: 14px !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.12) !important;
+}
+
+.contact-info .whatsapp-button:hover,
+.whatsapp-button:hover {
+  background: #25d366 !important;
+  border-color: #25d366 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35) !important;
+}
+
+/* Ensure no override from .contact-info svg { color: var(--red); } */
+.contact-info .whatsapp-button svg,
+.whatsapp-button svg {
+  color: unset !important;
+  min-width: unset !important;
+}
+
+.whatsapp-button .whatsapp-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+  background: #25d366 !important;
+  box-shadow: 0 2px 5px rgba(37, 211, 102, 0.3) !important;
+  transition: all 0.25s ease !important;
+}
+
+.whatsapp-button:hover .whatsapp-badge {
+  transform: scale(1.08) !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.whatsapp-button:hover .whatsapp-badge svg circle {
+  fill: #ffffff !important;
+}
+
+.whatsapp-button:hover .whatsapp-badge svg path {
+  stroke: #25d366 !important;
+}
+
+.contact-info .whatsapp-button > svg,
+.whatsapp-button > svg {
+  color: #25d366 !important;
+  stroke: #25d366 !important;
+}
+
+.contact-info .whatsapp-button:hover > svg,
+.whatsapp-button:hover > svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+

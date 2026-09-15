@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { images } from '../data/catalog';
 import { request } from '../lib/api';
-import { Btn, PageHead } from '../components/ui';
+import { Btn, PageHead, WhatsAppIcon } from '../components/ui';
 import shopFront from '../assets/gallary/2.webp';
 
 export default function ContactPage({ content }) {
@@ -107,7 +107,10 @@ export default function ContactPage({ content }) {
             {site.businessHours || 'Monday to Saturday: 9:00 AM - 8:00 PM'}
           </p>
 
-          <a className="whatsapp-button" href={whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={18} /> WhatsApp Now</a>
+          <a className="whatsapp-button" href={whatsapp} target="_blank" rel="noreferrer">
+            <WhatsAppIcon size={20} />
+            <span>WhatsApp Now</span>
+          </a>
           <img src={shopFront} alt="Raja Electricals shop front" />
         </div>
 
