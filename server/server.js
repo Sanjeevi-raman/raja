@@ -10,8 +10,16 @@ const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://stombregar3_db_user:RajaMongo@cluster0.vsfwtu2.mongodb.net/raja-electricals?retryWrites=true&w=majority';
-const JWT_SECRET = process.env.JWT_SECRET || 'raja-electricals-jwt-secret-key-2025';
+const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!MONGODB_URI) {
+  throw new Error('Configuration error: MONGODB_URI environment variable is required.');
+}
+
+if (!JWT_SECRET) {
+  throw new Error('Configuration error: JWT_SECRET environment variable is required.');
+}
 
 // URL Normalization for Vercel Serverless / Reverse Proxy routing
 app.use((req, _res, next) => {
