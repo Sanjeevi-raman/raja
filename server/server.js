@@ -272,12 +272,15 @@ async function ensureDbConnected() {
   if (!dbPromise) {
     const isAtlas = MONGODB_URI.includes('mongodb+srv://') || MONGODB_URI.includes('.mongodb.net');
     console.log(`Connecting to MongoDB ${isAtlas ? 'Atlas' : 'Server'}...`);
-    dbPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
+    dbPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 2500 })
       .then(async () => {
         console.log(`Connected successfully to MongoDB ${isAtlas ? 'Atlas' : 'Server'}! Database: ${mongoose.connection.name}`);
-        await Promise.all([seed(), ensureContentDefaults(), migrateProducts()]);
-        isInitialized = true;
-        console.log('MongoDB initialization and data seeding complete.');
+        if (!isInitialized) {
+          isInitialized = true;
+          Promise.all([seed(), ensureContentDefaults(), migrateProducts()]).catch(err => {
+            console.warn('Initial background sync notice:', err.message);
+          });
+        }
       })
       .catch(error => {
         dbPromise = null;
@@ -287,10 +290,18 @@ async function ensureDbConnected() {
   return dbPromise;
 }
 
-// Serverless-friendly middleware: ensure DB is connected BEFORE processing API requests
-app.use('/api', async (_req, _res, next) => {
+// Serverless-friendly middleware: ensure DB is connected BEFORE processing data requests,
+// but NEVER block instant endpoints like login, logout, or health check
+app.use('/api', async (req, _res, next) => {
+  const path = req.path || '';
+  if (path === '/auth/login' || path === '/auth/logout' || path === '/health') {
+    return next();
+  }
   try {
-    await ensureDbConnected();
+    await Promise.race([
+      ensureDbConnected(),
+      new Promise(resolve => setTimeout(resolve, 2000))
+    ]);
   } catch (_e) {
     // Offline/fallback handling is built into route handlers
   }
@@ -434,10 +445,10 @@ app.get('/api/content', async (_req, res, next) => {
         const results = [siteResult, productsResult, projectsResult, galleryResult, brandsResult, categoriesResult, industriesResult];
         const failed = results.find(result => result.error);
 
-        if (!failed && siteResult.data) {
-          const siteData = siteResult.data?.data || {};
+        if (!failed && (siteResult?.data || (productsResult.data && productsResult.data.length > 0))) {
+          const siteData = siteResult?.data?.data || initialContent.site || {};
           return res.json({
-            ...siteData,
+            site: siteData,
             products: recordsFromRows(productsResult.data),
             projects: recordsFromRows(projectsResult.data),
             gallery: recordsFromRows(galleryResult.data),
@@ -600,6 +611,132 @@ app.delete('/api/:collection/:id', auth, async (req, res, next) => {
     });
     res.sendStatus(204);
   } catch (error) { next(error); }
+});
+
+// Catalogue PDF upload/update endpoint
+app.put('/api/products/:id/catalogue', auth, async (req, res, next) => {
+  try {
+    const { fileName, data: base64Data } = req.body || {};
+    if (!fileName || !base64Data) {
+      return res.status(400).json({ error: 'fileName and base64 data are required.' });
+    }
+
+    const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const contentType = matches ? matches[1] : 'application/pdf';
+    const rawBase64 = matches ? matches[2] : base64Data;
+    const buffer = Buffer.from(rawBase64, 'base64');
+
+    // 1. Supabase sync if configured
+    if (supabase) {
+      try {
+        await supabase.from('catalogues').upsert({
+          productId: req.params.id,
+          fileName,
+          data: {
+            fileName,
+            contentType,
+            base64: rawBase64,
+            size: buffer.length,
+            updated_at: new Date().toISOString()
+          }
+        }, { onConflict: 'productId' });
+
+        await supabase.from('products').update({
+          catalog_name: fileName,
+          catalog_url: `/api/catalogue/${req.params.id}`,
+          updated_at: new Date().toISOString()
+        }).eq('id', req.params.id);
+      } catch (sbErr) {
+        console.warn('Supabase catalogue update notice:', sbErr.message);
+      }
+    }
+
+    // 2. MongoDB sync
+    if (mongoose.connection.readyState === 1) {
+      await Catalogue.findOneAndUpdate(
+        { productId: req.params.id },
+        { fileName, data: buffer, contentType, size: buffer.length },
+        { upsert: true, new: true }
+      );
+      const product = await Product.findOneAndUpdate(
+        { id: req.params.id },
+        { catalogName: fileName },
+        { new: true }
+      );
+      if (product) return res.json(publicProduct(product));
+    }
+
+    res.json({
+      id: req.params.id,
+      catalogName: fileName,
+      catalogUrl: `/api/catalogue/${req.params.id}`
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Catalogue PDF removal endpoint
+app.delete('/api/products/:id/catalogue', auth, async (req, res, next) => {
+  try {
+    if (supabase) {
+      try {
+        await supabase.from('catalogues').delete().eq('productId', req.params.id);
+        await supabase.from('products').update({
+          catalog_name: null,
+          catalog_url: null,
+          updated_at: new Date().toISOString()
+        }).eq('id', req.params.id);
+      } catch (sbErr) {
+        console.warn('Supabase catalogue delete notice:', sbErr.message);
+      }
+    }
+
+    if (mongoose.connection.readyState === 1) {
+      await Catalogue.deleteOne({ productId: req.params.id });
+      await Product.findOneAndUpdate(
+        { id: req.params.id },
+        { $unset: { catalogName: 1 } },
+        { new: true }
+      );
+    }
+
+    res.json({ message: 'Catalogue removed.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Serve catalogue PDF
+app.get('/api/catalogue/:id', async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      const item = await Catalogue.findOne({ productId: req.params.id });
+      if (item && item.data) {
+        res.setHeader('Content-Type', item.contentType || 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${item.fileName || 'catalogue.pdf'}"`);
+        return res.send(item.data);
+      }
+    }
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.from('catalogues').select('*').eq('productId', req.params.id).maybeSingle();
+        if (!error && data?.data?.base64) {
+          const buf = Buffer.from(data.data.base64, 'base64');
+          res.setHeader('Content-Type', data.data.contentType || 'application/pdf');
+          res.setHeader('Content-Disposition', `inline; filename="${data.data.fileName || 'catalogue.pdf'}"`);
+          return res.send(buf);
+        }
+      } catch (sbErr) {
+        console.warn('Supabase catalogue fetch notice:', sbErr.message);
+      }
+    }
+
+    res.status(404).json({ error: 'Catalogue not found.' });
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post('/api/enquiries', async (req, res, next) => {
